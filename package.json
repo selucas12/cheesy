@@ -4,8 +4,7 @@
   "description": "Control Claude Code from Telegram — Cheesyboy",
   "main": "dist/workspace-telegram-bot.js",
   "bin": {
-    "cheesy": "./dist/cli.js",
-    "ccgram": "./dist/cli.js"
+    "cheesy": "./dist/src/cli.js"
   },
   "files": [
     "dist/",
@@ -14,7 +13,8 @@
     "ccgram.service",
     ".env.example",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "start": "node dist/workspace-telegram-bot.js",
@@ -31,6 +31,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "test": "vitest run",
+    "prepare": "tsc",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
@@ -64,7 +65,9 @@
   },
   "homepage": "https://github.com/selucas12/cheesy",
   "dependencies": {
-    "dotenv": "^17.2.1"
+    "commander": "^14.0.3",
+    "dotenv": "^17.2.1",
+    "picocolors": "^1.1.1"
   },
   "optionalDependencies": {
     "express": "^4.18.2",
