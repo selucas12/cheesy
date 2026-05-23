@@ -1,6 +1,97 @@
 # Changelog
 
-All notable changes to CCGram are documented here.
+All notable changes to Cheesyboy are documented here. Historical entries
+below 2.0.0 are from the upstream ccgram project this is forked from.
+
+## [2.0.0] - 2026-05-23
+
+The fork's first major release as `@selucas12/cheesy`. Marks the project's
+transition from upstream ccgram to Cheesyboy.
+
+### Breaking
+
+- **Package renamed** from `@jsayubi/ccgram` to `@selucas12/cheesy`. Upgraders
+  must re-install: `npm i -g @selucas12/cheesy`.
+- **CLI binary renamed** from `ccgram` to `cheesy`. The legacy `ccgram` alias
+  has been removed. For muscle memory: `alias ccgram=cheesy`.
+- **CLI restructured.** `bin` now points to `./dist/src/cli.js` (was
+  `./dist/cli.js`); the entry point and command modules live under `src/`.
+- **License required.** `cheesy start` now refuses to start without a valid
+  LemonSqueezy license activation. Bypass with `cheesy init --dev`,
+  `--skip-license`, or `CHEESY_SKIP_LICENSE=1`.
+- **Default idle threshold lowered** from 5 min to 2 min so Telegram takes
+  over more aggressively when the user steps away. Override via
+  `ACTIVE_THRESHOLD_SECONDS`.
+
+### Preserved (no breakage for existing ccgram users)
+
+- Install directory remains `~/.ccgram/` — sessions, `.env`, and project
+  history survive the upgrade.
+- `CCGRAM_HOME`, `CCGRAM_DATA_DIR`, launchd label `com.ccgram`, systemd unit
+  name `ccgram`, email subject markers `[CCGram #…]`, `X-CCGram-*` headers,
+  and other wire-format / installed-state identifiers are unchanged.
+
+### New: CLI
+
+- `cheesy init` — interactive setup wizard with preflight (Node ≥18,
+  ~/.claude/ present, OS supported). `--dev` writes a dev marker that skips
+  license activation; `LICENSE_KEY` env var enables headless activation.
+- `cheesy start [--foreground] [--skip-license]` — brings the bot online
+  via launchd (macOS) or systemd (Linux), with foreground fallback.
+- `cheesy stop` — idempotent service + process teardown.
+- `cheesy status` — bot + service + session + license overview.
+- `cheesy hooks` — print the Claude Code settings.json hooks snippet for
+  manual install.
+- `cheesy license activate <key> | status | deactivate` — manage
+  LemonSqueezy activations.
+- Built on `commander` + `picocolors`. Picocolors over chalk because chalk
+  v5 is ESM-only and incompatible with our CommonJS build.
+
+### New: License validation
+
+- LemonSqueezy License API client (`src/lib/license-validator.ts`):
+  activate / validate / deactivate with form-encoded POST (the License API
+  does not use bearer auth — the license key in the body IS the credential).
+- License records stored at `~/.ccgram/.license.json` with mode 0600.
+- 7-day offline grace window — `cheesy start` allows a recent cached
+  validation if the network is unreachable.
+- Discriminated error results (invalid / limit / network / bad-request) so
+  the CLI shows focused error messages instead of HTTP noise.
+
+### New: 4-button permission UI
+
+- Telegram permission prompts now show four buttons: Yes / Yes-stop-asking /
+  No / Explain. Hook + bot translate the new action vocabulary
+  (`yes` / `yes_stop` / `no` / `explain`) end-to-end; the legacy ccgram vocab
+  (`allow` / `always` / `defer` / `deny`) is still recognized for in-flight
+  prompts during upgrade.
+
+### New: CI / CD
+
+- `.github/workflows/ci.yml` now runs on every PR in addition to pushes.
+- `.github/workflows/publish.yml` creates a GitHub Release with auto-generated
+  notes (commits and PRs since the previous tag) after a successful
+  `npm publish`. Pre-release tags (e.g. `v2.0.0-beta.1`) are correctly
+  flagged so they don't displace `latest`.
+
+### Rebrand
+
+- `CCGram` → `Cheesyboy` in all user-facing display strings (banners, README,
+  CLI help, log namespaces, email defaults, Discord webhook username, Windows
+  toast app name). Header comments mark each file as a fork.
+- `workspace-router.PINNED_PROJECTS` updated from `['assistant', 'ccgram']` to
+  `['assistant', 'cheesy-source']` to match the new source-repo folder name.
+- `LICENSE` retains the original `Copyright (c) 2026 JS Ayubi` (MIT) —
+  upstream attribution preserved.
+
+### Tooling
+
+- `prepare: tsc` added to `package.json` scripts — fresh clones auto-build
+  on `npm install`.
+- `CHANGELOG.md` added to the published `files` array.
+- New runtime dependencies: `commander ^14`, `picocolors ^1.1`.
+
+---
 
 ## [1.2.2] - 2026-04-14
 
