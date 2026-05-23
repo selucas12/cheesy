@@ -53,18 +53,62 @@ Claude Code  →  Cheesyboy hooks  →  Telegram bot  →  📱 your phone
 ## Quick Start
 
 ```bash
-npx @selucas12/cheesy init
+npm install -g @selucas12/cheesy
+cheesy init
 ```
 
-The setup wizard will:
-1. Ask for your bot token and chat ID
-2. Install the bot to `~/.ccgram/`
-3. Merge the required hooks into `~/.claude/settings.json`
-4. Generate and start a background service (launchd on macOS, systemd on Linux)
-
-> The install path remains `~/.ccgram/` so users upgrading from ccgram don't have to migrate.
+The `init` wizard will:
+1. Run preflight checks (Node ≥ 18, `~/.claude/` exists, OS supported)
+2. Ask for your Telegram bot token and chat ID
+3. Install the bot to `~/.ccgram/`
+4. Merge the required hooks into `~/.claude/settings.json`
+5. Generate and start a background service (launchd on macOS, systemd on Linux)
+6. Prompt for your LemonSqueezy license key (purchased at [cheesyboy.com](https://github.com/selucas12/cheesy)) — paste it from your email receipt
 
 Then open Telegram and message your bot — Claude Code will now notify you remotely.
+
+> Upgrading from upstream `ccgram`? The install path stays `~/.ccgram/`, so your `.env`, sessions, and project history survive. The binary is now `cheesy` instead of `ccgram` — add `alias ccgram=cheesy` for muscle memory.
+
+### Headless install
+
+Skip the interactive prompts by setting environment variables before running `cheesy init`:
+
+```bash
+LICENSE_KEY=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX \
+TELEGRAM_BOT_TOKEN=… \
+TELEGRAM_CHAT_ID=… \
+cheesy init
+```
+
+### Dev install (no license)
+
+If you're testing locally without a license key:
+
+```bash
+cheesy init --dev
+```
+
+This writes a dev marker at `~/.ccgram/.license-dev`. `cheesy start` will run without license validation. Activate a real license any time with `cheesy license activate <KEY>` — the marker is cleared automatically.
+
+## License Activation
+
+Cheesyboy is paid software. `cheesy start` refuses to launch the bot without a valid LemonSqueezy license (unless you're in dev mode).
+
+```bash
+# Activate (consumes one slot on your seat count)
+cheesy license activate XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+
+# Check status (validates remotely; falls back to a 7-day cached
+# validation if LemonSqueezy is unreachable)
+cheesy license status
+
+# Free the slot — useful when moving to a new machine
+cheesy license deactivate
+```
+
+Your activation record lives at `~/.ccgram/.license.json` with mode `0600`. It's never logged or transmitted beyond LemonSqueezy's API.
+
+**CI / automation**: `cheesy start --skip-license` (or `CHEESY_SKIP_LICENSE=1`) bypasses the gate.
 
 ## How It Works
 
@@ -99,7 +143,7 @@ Cheesyboy integrates with [Claude Code hooks](https://docs.anthropic.com/en/docs
 Claude requests permission
   → hook generates promptId, writes pending file
   → Telegram message with inline buttons sent to your phone
-  → you tap Allow / Deny
+  → you tap Yes / Yes-stop-asking / No / Explain
   → bot writes response file
   → hook reads response, returns decision to Claude
   → Claude continues
@@ -174,7 +218,7 @@ Each session shows a snippet of the first message for easy identification. Sessi
 
 ## Configuration
 
-Cheesyboy is configured via `~/.ccgram/.env`. Run `cheesy init` (or `ccgram init` — both work) to generate it interactively, or edit it manually:
+Cheesyboy is configured via `~/.ccgram/.env`. Run `cheesy init` to generate it interactively, or edit it manually:
 
 ```bash
 # Required
@@ -288,6 +332,11 @@ End users don't need this — `cheesy init` handles it automatically.
 
 ```
 src/
+├── cli.ts                         # cheesy CLI entry point (commander)
+├── commands/                      # init, start, stop, status, hooks, license
+├── lib/
+│   ├── preflight.ts               # Node/OS/~/.claude/ checks
+│   └── license-validator.ts       # LemonSqueezy License API client
 ├── utils/
 │   ├── active-check.ts            # Detect terminal activity; suppress notifications when present
 │   ├── pty-session-manager.ts     # Headless PTY backend via node-pty (tmux fallback)
@@ -312,7 +361,6 @@ pre-compact-notify.ts              # PreCompact hook with block button
 elicitation-notify.ts              # MCP elicitation hook (schema-aware, per-field)
 user-prompt-hook.ts                # UserPromptSubmit hook — writes terminal activity timestamp
 setup.ts                           # Interactive setup wizard
-cli.ts                             # cheesy CLI entry point
 ```
 
 ### Tests
@@ -331,7 +379,11 @@ Tests use isolated temp directories and run with `npm test` (vitest, no configur
 
 ### Dependencies
 
-**Core:** Only `dotenv` is required. The bot runs on Node.js built-ins.
+**Core:**
+- `commander` — CLI argument parsing
+- `picocolors` — terminal colors (chalk v5 is ESM-only; picocolors is CJS-friendly)
+- `dotenv` — `.env` file loading
+- Everything else uses Node.js built-ins (`https` for the bot, `fetch` for the license API).
 
 **Optional** (graceful degradation if missing):
 - `express` — webhook servers
@@ -379,9 +431,75 @@ The token is stored in `~/.ccgram/.env`, readable only by your user. It's never 
 **What's the 64-byte callback limit?**
 Telegram limits inline button callback data to 64 bytes. Cheesyboy uses a compact `type:promptId:action` format to stay within this limit.
 
+## Troubleshooting
+
+### `cheesy: command not found` after `npm install -g`
+
+npm's global `bin` directory isn't on your `PATH`. Find it with:
+```bash
+npm config get prefix
+```
+Add `<prefix>/bin` to your shell's `PATH` (usually `~/.zshrc` or `~/.bashrc`). On macOS with Homebrew Node, the prefix is `/opt/homebrew` and `bin` is already on `PATH` — the most common cause is having both system Node and Homebrew Node installed.
+
+### `cheesy start` says "No license activated on this machine"
+
+You haven't activated a license yet. Two options:
+- **Real license:** `cheesy license activate <YOUR-KEY>` (key is in your LemonSqueezy email receipt)
+- **Dev mode:** `cheesy init --dev` writes a marker that bypasses the gate
+
+### `cheesy license activate` says "License key looks malformed"
+
+The pre-flight regex expects a UUID-like string (hyphens, hex, ≥ 8 chars). If your key looks different from the LemonSqueezy default format, check:
+- No extra whitespace or quotes copied from the email
+- The full key, not just the suffix
+- It's a license key (`XXXX-XXXX-XXXX-XXXX`), not an order ID or transaction reference
+
+### `cheesy license activate` says "activation limit reached"
+
+You've used all the seats your license allows. Either:
+- Run `cheesy license deactivate` on a machine you no longer use (frees one slot), then retry on the new one
+- Contact LemonSqueezy support to raise the seat count
+
+### `cheesy license status` says "Could not reach LemonSqueezy"
+
+Network issue. The cached record at `~/.ccgram/.license.json` is still valid for **7 days** since the last successful remote validation — `cheesy start` will allow you to run during that grace window. After 7 days offline, `cheesy start` refuses until validation succeeds again.
+
+### Hooks aren't firing — bot is up but no Telegram messages
+
+Inspect `~/.claude/settings.json` and confirm the hook commands point to `~/.ccgram/dist/`:
+```bash
+cat ~/.claude/settings.json | grep -A1 ccgram
+```
+If the paths are stale (e.g., from a previous install in `/tmp/`), re-run `cheesy init` to rewrite them.
+
+### Bot won't start — `cheesy status` says "stopped"
+
+```bash
+# macOS: check launchd
+launchctl print gui/$(id -u)/com.ccgram | head -20
+
+# Tail the actual logs (after `cheesy init` runs at least once)
+tail -f ~/.ccgram/logs/bot-stderr.log
+```
+Most common causes: missing `TELEGRAM_BOT_TOKEN`/`TELEGRAM_CHAT_ID` in `~/.ccgram/.env`, or the license validation gate is refusing (try `cheesy license status`).
+
+### "tmux not found" warning during `cheesy init`
+
+Non-fatal. Cheesyboy supports three injection backends — tmux, Ghostty, and PTY (`node-pty`). On macOS with Ghostty, you don't need tmux at all. On Linux, install tmux for the smoothest experience: `sudo apt install tmux`.
+
+### Permission prompts show in Telegram even when I'm at the terminal
+
+The default idle threshold is **2 minutes** — Cheesyboy assumes you're idle if you haven't sent Claude a message in that window. Tighten or loosen via `ACTIVE_THRESHOLD_SECONDS` in `~/.ccgram/.env` (set to a high number to suppress Telegram while at terminal; set to `0` to always notify).
+
+### I upgraded from upstream `ccgram` and the old `ccgram` command stopped working
+
+Intentional in 2.0.0 — the binary is now `cheesy`. Add `alias ccgram=cheesy` to your shell rc file if you want the muscle memory.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Original copyright `(c) 2026 JS Ayubi` (upstream ccgram).
+
+The Cheesyboy *software* is MIT-licensed. **Use of the software in production with Telegram requires a paid LemonSqueezy license** (validated by `cheesy start`). See [License Activation](#license-activation) above.
 
 ---
 
