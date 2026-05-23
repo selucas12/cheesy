@@ -110,8 +110,10 @@ async function main(): Promise<void> {
     keyboard = {
       inline_keyboard: [
         [
-          { text: '\u2705 Approve', callback_data: `perm:${promptId}:allow` },
-          { text: '\u274C Reject', callback_data: `perm:${promptId}:deny` },
+          { text: '\u2705 Yes', callback_data: `perm:${promptId}:yes` },
+          { text: '\u2705 Yes, stop asking', callback_data: `perm:${promptId}:yes_stop` },
+          { text: '\u274C No', callback_data: `perm:${promptId}:no` },
+          { text: '\u{1F4AC} Explain', callback_data: `perm:${promptId}:explain` },
         ],
       ],
     };
@@ -132,12 +134,10 @@ async function main(): Promise<void> {
     keyboard = {
       inline_keyboard: [
         [
-          { text: '\u2705 Allow', callback_data: `perm:${promptId}:allow` },
-          { text: '\u274C Deny', callback_data: `perm:${promptId}:deny` },
-          { text: '\u{1F513} Always', callback_data: `perm:${promptId}:always` },
-        ],
-        [
-          { text: '\u23F8 Defer', callback_data: `perm:${promptId}:defer` },
+          { text: '\u2705 Yes', callback_data: `perm:${promptId}:yes` },
+          { text: '\u2705 Yes, stop asking', callback_data: `perm:${promptId}:yes_stop` },
+          { text: '\u274C No', callback_data: `perm:${promptId}:no` },
+          { text: '\u{1F4AC} Explain', callback_data: `perm:${promptId}:explain` },
         ],
       ],
     };
@@ -192,10 +192,14 @@ async function main(): Promise<void> {
       process.stdout.write(outputStr + '\n');
       debugLog(`[${promptId}] Stdout written`);
     } else {
+      // New 4-button vocab: yes / yes_stop / no / explain.
+      // Legacy: allow / deny / always.
+      // "explain" is treated as deny so Claude is prompted to give context and re-ask.
       let decision: 'allow' | 'deny';
-      if (action === 'deny') {
+      if (action === 'no' || action === 'deny' || action === 'explain') {
         decision = 'deny';
       } else {
+        // yes, yes_stop, allow, always → allow
         decision = 'allow';
       }
 
@@ -206,7 +210,7 @@ async function main(): Promise<void> {
             behavior: decision,
           },
         },
-        systemMessage: `Decision received via Telegram: user ${decision}ed`,
+        systemMessage: `Decision received via Telegram: user ${decision}ed (${action})`,
       };
 
       const outputStr = JSON.stringify(output);
