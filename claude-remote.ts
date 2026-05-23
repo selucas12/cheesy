@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /**
- * CCGram - Claude Code Smart Notification System
+ * Cheesyboy - Claude Code Smart Notification System (fork of ccgram)
  * Main entry point for the CLI tool
  */
 
-// Load environment variables from CCGram directory
+// Load environment variables from project directory
 import path from 'path';
 import { PROJECT_ROOT } from './src/utils/paths';
 const envPath = path.join(PROJECT_ROOT, '.env');
@@ -273,7 +273,7 @@ class ClaudeCodeRemoteCLI {
     async handleStatus(args: string[]): Promise<void> {
         const status = this.notifier.getStatus() as Record<string, any>;
 
-        console.log('CCGram Status\n');
+        console.log('Cheesyboy Status\n');
         console.log('Configuration:');
         console.log(`  Enabled: ${status.enabled ? 'Yes' : 'No'}`);
         console.log(`  Language: ${status.config.language}`);
@@ -620,7 +620,7 @@ class ClaudeCodeRemoteCLI {
         };
 
         try {
-            console.log('🚀 CCGram Email Quick Setup Wizard\n');
+            console.log('🚀 Cheesyboy Email Quick Setup Wizard\n');
 
             // Select email provider
             console.log('Please select your email provider:');
@@ -715,7 +715,7 @@ class ClaudeCodeRemoteCLI {
                             pass: password
                         }
                     },
-                    from: `CCGram <${email}>`,
+                    from: `Cheesyboy <${email}>`,
                     to: email,
                     template: {
                         checkInterval: 30
@@ -988,7 +988,7 @@ class ClaudeCodeRemoteCLI {
 
     showHelp(): void {
         console.log(`
-CCGram - Claude Code Smart Notification System
+Cheesyboy - Claude Code Smart Notification System
 
 Usage: claude-remote <command> [options]
 
@@ -1043,7 +1043,7 @@ Examples:
   claude-remote commands list             # View pending email commands
   claude-remote relay start               # Run in foreground (need to keep window open)
 
-For more information, visit: https://github.com/jsayubi/ccgram
+For more information, visit: https://github.com/selucas12/cheesy
         `);
     }
 }

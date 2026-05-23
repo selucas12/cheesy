@@ -1,5 +1,5 @@
 /**
- * CCGram Installer
+ * Cheesyboy Installer
  * Handles installation and configuration of Claude Code hooks
  */
 
@@ -70,7 +70,7 @@ class Installer {
     }
 
     async run(args: string[] = []): Promise<void> {
-        console.log('=== CCGram Claude Code Installer ===\n');
+        console.log('=== Cheesyboy Claude Code Installer ===\n');
 
         // Check dependencies
         if (!this.checkDependencies()) {

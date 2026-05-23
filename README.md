@@ -1,11 +1,11 @@
 <div align="center">
 
-# CCGram
+# Cheesyboy
 
 **Control Claude Code from Telegram — approve permissions, answer questions, resume sessions, and manage AI coding agents from your phone.**
 
-[![CI](https://github.com/jsayubi/ccgram/actions/workflows/ci.yml/badge.svg)](https://github.com/jsayubi/ccgram/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@jsayubi/ccgram)](https://www.npmjs.com/package/@jsayubi/ccgram)
+[![CI](https://github.com/selucas12/cheesy/actions/workflows/ci.yml/badge.svg)](https://github.com/selucas12/cheesy/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@selucas12/cheesy)](https://www.npmjs.com/package/@selucas12/cheesy)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -13,10 +13,12 @@
 
 ---
 
-CCGram is a self-hosted Telegram bot that bridges Claude Code to your phone. When Claude needs a permission, has a question, or finishes a task — you get a Telegram message with inline buttons to respond. Resume past conversations, start new sessions, and manage multiple AI coding agents — all without being at your keyboard.
+Cheesyboy is a self-hosted Telegram bot that bridges Claude Code to your phone. When Claude needs a permission, has a question, or finishes a task — you get a Telegram message with inline buttons to respond. Resume past conversations, start new sessions, and manage multiple AI coding agents — all without being at your keyboard.
+
+> Forked from [ccgram](https://github.com/jsayubi/ccgram) by JS Ayubi. See LICENSE for original copyright.
 
 ```
-Claude Code  →  ccgram hooks  →  Telegram bot  →  📱 your phone
+Claude Code  →  Cheesyboy hooks  →  Telegram bot  →  📱 your phone
      ↑                                ↓
      └─ updatedInput / tmux / Ghostty / PTY ─┘
 ```
@@ -51,7 +53,7 @@ Claude Code  →  ccgram hooks  →  Telegram bot  →  📱 your phone
 ## Quick Start
 
 ```bash
-npx @jsayubi/ccgram init
+npx @selucas12/cheesy init
 ```
 
 The setup wizard will:
@@ -60,17 +62,19 @@ The setup wizard will:
 3. Merge the required hooks into `~/.claude/settings.json`
 4. Generate and start a background service (launchd on macOS, systemd on Linux)
 
+> The install path remains `~/.ccgram/` so users upgrading from ccgram don't have to migrate.
+
 Then open Telegram and message your bot — Claude Code will now notify you remotely.
 
 ## How It Works
 
-CCGram integrates with [Claude Code hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) — shell scripts that Claude Code calls at key moments. Hooks send Telegram messages and, depending on the event, return your response to Claude Code directly via stdout (`updatedInput` for questions, `decision` for permissions) or inject keystrokes into the active session (tmux, Ghostty, or PTY).
+Cheesyboy integrates with [Claude Code hooks](https://docs.anthropic.com/en/docs/claude-code/hooks) — shell scripts that Claude Code calls at key moments. Hooks send Telegram messages and, depending on the event, return your response to Claude Code directly via stdout (`updatedInput` for questions, `decision` for permissions) or inject keystrokes into the active session (tmux, Ghostty, or PTY).
 
 ### Hooks installed
 
 | Hook | Event | What it does |
 |------|-------|-------------|
-| `permission-hook.js` | `PermissionRequest` | Sends a permission dialog with Allow / Deny / Always / Defer buttons. Blocks Claude until you respond. |
+| `permission-hook.js` | `PermissionRequest` | Sends a permission dialog with Yes / Yes-stop-asking / No / Explain buttons. Blocks Claude until you respond. |
 | `question-notify.js` | `PreToolUse` (AskUserQuestion) | Sends Claude's question with selectable options. Returns answer directly via `updatedInput` — works with any terminal. |
 | `enhanced-hook-notify.js completed` | `Stop` | Notifies you when Claude finishes a task, including the last response text. |
 | `enhanced-hook-notify.js waiting` | `Notification` | Notifies you when Claude is waiting for input. |
@@ -170,7 +174,7 @@ Each session shows a snippet of the first message for easy identification. Sessi
 
 ## Configuration
 
-CCGram is configured via `~/.ccgram/.env`. Run `ccgram init` to generate it interactively, or edit it manually:
+Cheesyboy is configured via `~/.ccgram/.env`. Run `cheesy init` (or `ccgram init` — both work) to generate it interactively, or edit it manually:
 
 ```bash
 # Required
@@ -211,7 +215,7 @@ LOG_LEVEL=info        # debug, info, warn, error
 
 ## Service Management
 
-`ccgram init` generates and starts a background service automatically.
+`cheesy init` generates and starts a background service automatically.
 
 ### macOS (launchd)
 
@@ -238,7 +242,7 @@ journalctl -u ccgram -f
 
 ## Installation Details
 
-`ccgram init` installs the bot to `~/.ccgram/` — a persistent directory that survives `npx` cleanup and system updates. The hooks in `~/.claude/settings.json` always point to this location.
+`cheesy init` installs the bot to `~/.ccgram/` — a persistent directory that survives `npx` cleanup and system updates. The hooks in `~/.claude/settings.json` always point to this location. (The path stays `~/.ccgram/` for backward compatibility with users upgrading from upstream ccgram.)
 
 ```
 ~/.ccgram/
@@ -258,8 +262,8 @@ journalctl -u ccgram -f
 ## Development
 
 ```bash
-git clone https://github.com/jsayubi/ccgram
-cd ccgram
+git clone https://github.com/selucas12/cheesy
+cd cheesy
 npm install
 cp .env.example .env         # Add your bot token and chat ID
 npm run build
@@ -278,7 +282,7 @@ npm test               # Run 120 tests (vitest)
 cp -r dist/ ~/.ccgram/dist/
 ```
 
-End users don't need this — `ccgram init` handles it automatically.
+End users don't need this — `cheesy init` handles it automatically.
 
 ### Architecture
 
@@ -308,7 +312,7 @@ pre-compact-notify.ts              # PreCompact hook with block button
 elicitation-notify.ts              # MCP elicitation hook (schema-aware, per-field)
 user-prompt-hook.ts                # UserPromptSubmit hook — writes terminal activity timestamp
 setup.ts                           # Interactive setup wizard
-cli.ts                             # ccgram CLI entry point
+cli.ts                             # cheesy CLI entry point
 ```
 
 ### Tests
@@ -338,7 +342,7 @@ Tests use isolated temp directories and run with `npm test` (vitest, no configur
 ## FAQ
 
 **Do I need a public server?**
-No. CCGram uses Telegram's long-polling API — it works behind NAT, on a laptop, or anywhere with outbound HTTPS.
+No. Cheesyboy uses Telegram's long-polling API — it works behind NAT, on a laptop, or anywhere with outbound HTTPS.
 
 **What if I'm already at my terminal?**
 All notifications — including permission requests — are suppressed automatically when you've sent a message to Claude within the last 5 minutes. The threshold is configurable via `ACTIVE_THRESHOLD_SECONDS`. Step away for more than 5 minutes and Telegram instantly takes over.
@@ -350,12 +354,12 @@ Yes. Each Claude session maps to a named tmux or PTY session. Use `/sessions` to
 Yes. `/resume` reads from Claude Code's own session storage, so it sees every conversation — not just ones started through the bot. If the session is still running in your terminal, you'll get a warning before resuming to prevent conflicts.
 
 **Do I need tmux?**
-No. CCGram supports three injection backends and picks the right one automatically:
+No. Cheesyboy supports three injection backends and picks the right one automatically:
 - **tmux** (default when running) — cross-platform, recommended
 - **Ghostty** — auto-detected on macOS via `TERM_PROGRAM=ghostty`; uses AppleScript for keystroke injection and tab focus
 - **PTY** (`node-pty`) — headless fallback when neither tmux nor Ghostty is available
 
-For question answering specifically (the `AskUserQuestion` hook), CCGram returns answers to Claude Code directly via the `updatedInput` hook output — so it works on **any** terminal, including bare zsh, screen, or anything else, without keystroke injection at all.
+For question answering specifically (the `AskUserQuestion` hook), Cheesyboy returns answers to Claude Code directly via the `updatedInput` hook output — so it works on **any** terminal, including bare zsh, screen, or anything else, without keystroke injection at all.
 
 To force a specific backend:
 ```bash
@@ -373,7 +377,7 @@ Full remote control — permission approvals, question answering, `/new`, `/stop
 The token is stored in `~/.ccgram/.env`, readable only by your user. It's never logged or transmitted beyond Telegram's API.
 
 **What's the 64-byte callback limit?**
-Telegram limits inline button callback data to 64 bytes. CCGram uses a compact `type:promptId:action` format to stay within this limit.
+Telegram limits inline button callback data to 64 bytes. Cheesyboy uses a compact `type:promptId:action` format to stay within this limit.
 
 ## License
 
@@ -385,6 +389,6 @@ MIT — see [LICENSE](LICENSE).
 
 Built for developers who run Claude Code unattended — approve permissions, resume conversations, and manage AI coding agents from anywhere.
 
-[Report a bug](https://github.com/jsayubi/ccgram/issues) · [Request a feature](https://github.com/jsayubi/ccgram/issues)
+[Report a bug](https://github.com/selucas12/cheesy/issues) · [Request a feature](https://github.com/selucas12/cheesy/issues)
 
 </div>

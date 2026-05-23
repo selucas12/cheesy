@@ -1,5 +1,5 @@
 /**
- * Telegram Bot API types (subset used by ccgram).
+ * Telegram Bot API types (subset used by Cheesyboy).
  */
 
 export interface TelegramUser {

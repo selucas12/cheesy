@@ -615,7 +615,7 @@ Security Note: Please do not forward this email, session will automatically expi
                                     SESSION_ID={{sessionId}}<br>
                                     EXPIRES_IN=24h<br>
                                     SECURITY=Do not forward this email<br>
-                                    POWERED_BY=CCGram
+                                    POWERED_BY=Cheesyboy
                                 </div>
                             </div>
                         </div>
@@ -676,9 +676,9 @@ Security Note: Please do not forward this email, session will automatically expi
             // Send test email
             const testNotification: Notification = {
                 type: 'completed',
-                title: 'CCGram Test',
+                title: 'Cheesyboy Test',
                 message: 'This is a test email to verify that the email notification function is working properly.',
-                project: 'CCGram-Test',
+                project: 'Cheesyboy-Test',
                 metadata: {
                     test: true,
                     timestamp: new Date().toISOString(),

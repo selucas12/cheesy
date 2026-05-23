@@ -45,7 +45,7 @@ switch (cmd) {
     const distDir = resolveDistDir();
     const botScript = path.join(distDir, 'workspace-telegram-bot.js');
     if (!fs.existsSync(botScript)) {
-      console.error('Error: ccgram is not installed. Run `ccgram init` first.');
+      console.error('Error: cheesy is not installed. Run `cheesy init` first.');
       process.exit(1);
     }
     spawn(process.execPath, [botScript], { stdio: 'inherit' })
@@ -88,8 +88,8 @@ switch (cmd) {
   }
 
   default:
-    console.log('ccgram — Control Claude Code from Telegram\n');
-    console.log('Usage: ccgram <command>\n');
+    console.log('cheesy — Control Claude Code from Telegram (Cheesyboy)\n');
+    console.log('Usage: cheesy <command>\n');
     console.log('Commands:');
     console.log('  init      Run interactive setup (configure .env and Claude hooks)');
     console.log('  start     Start the Telegram bot');

@@ -1,9 +1,10 @@
 {
-  "name": "@jsayubi/ccgram",
+  "name": "@selucas12/cheesy",
   "version": "1.2.2",
-  "description": "Control Claude Code from Telegram",
+  "description": "Control Claude Code from Telegram — Cheesyboy",
   "main": "dist/workspace-telegram-bot.js",
   "bin": {
+    "cheesy": "./dist/cli.js",
     "ccgram": "./dist/cli.js"
   },
   "files": [
@@ -33,6 +34,8 @@
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
+    "cheesy",
+    "cheesyboy",
     "ccgram",
     "claude-code",
     "telegram-bot",
@@ -42,7 +45,7 @@
     "claude",
     "anthropic"
   ],
-  "author": "JS Ayubi",
+  "author": "Stephen Lucas",
   "license": "MIT",
   "engines": {
     "node": ">=18.0.0"
@@ -54,12 +57,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/jsayubi/ccgram.git"
+    "url": "https://github.com/selucas12/cheesy.git"
   },
   "bugs": {
-    "url": "https://github.com/jsayubi/ccgram/issues"
+    "url": "https://github.com/selucas12/cheesy/issues"
   },
-  "homepage": "https://ccgram.com",
+  "homepage": "https://github.com/selucas12/cheesy",
   "dependencies": {
     "dotenv": "^17.2.1"
   },

@@ -1,13 +1,15 @@
-First of all, many thanks to everyone who wants to contribute to CCGram!
+First of all, many thanks to everyone who wants to contribute to Cheesyboy!
 
-# Contributing to CCGram
+# Contributing to Cheesyboy
+
+> Cheesyboy is a fork of [ccgram](https://github.com/jsayubi/ccgram) by JS Ayubi. See LICENSE for original copyright.
 
 ## 🚀 Quick Start
 
 ```bash
 # Fork, clone, and setup
-git clone https://github.com/YOUR_USERNAME/ccgram.git
-cd ccgram
+git clone https://github.com/YOUR_USERNAME/cheesy.git
+cd cheesy
 npm install
 cp .env.example .env
 
@@ -163,4 +165,4 @@ chore: update dependencies
 
 ## 📞 Get Help
 
-- Issues: [GitHub Issues](https://github.com/jsayubi/ccgram/issues)
+- Issues: [GitHub Issues](https://github.com/selucas12/cheesy/issues)

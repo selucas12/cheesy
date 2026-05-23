@@ -3,7 +3,7 @@
 // Node.js version check — must run before anything else
 const [major] = process.versions.node.split('.').map(Number);
 if (major < 18) {
-    console.error(`CCGram requires Node.js >= 18.0.0 (you have ${process.version}).`);
+    console.error(`Cheesyboy requires Node.js >= 18.0.0 (you have ${process.version}).`);
     console.error('Upgrade: https://nodejs.org/ or use nvm: nvm install 18');
     process.exit(1);
 }
@@ -1990,7 +1990,7 @@ async function start(): Promise<void> {
   fs.mkdirSync(dataDir, { recursive: true });
 
   const { version } = require(path.join(PROJECT_ROOT, 'package.json'));
-  logger.info(`CCGram v${version} — Starting Telegram bot (long polling)...`);
+  logger.info(`Cheesyboy v${version} — Starting Telegram bot (long polling)...`);
   logger.info(`Chat ID: ${CHAT_ID}`);
 
   // Prune expired sessions on startup

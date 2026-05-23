@@ -1,5 +1,5 @@
 /**
- * CCGram Configuration Manager
+ * Cheesyboy Configuration Manager
  * Interactive configuration tool for managing settings
  */
 
@@ -62,7 +62,7 @@ class ConfigurationManager {
 
     async showMainMenu(): Promise<void> {
         while (true) {
-            console.log('\n=== CCGram Configuration Manager ===');
+            console.log('\n=== Cheesyboy Configuration Manager ===');
             this.displayCurrentConfig();
             console.log('Options:');
             console.log('1. Basic Settings');
@@ -421,7 +421,7 @@ class ConfigurationManager {
         // Sender configuration
         const currentFrom = emailConfig.from || '';
         console.log(`Current sender: ${currentFrom || 'Not configured'}`);
-        const fromEmail = await this.question(`Sender display name (default: CCGram <${smtpUser}>): `);
+        const fromEmail = await this.question(`Sender display name (default: Cheesyboy <${smtpUser}>): `);
 
         // Build email configuration
         const newEmailConfig = {
@@ -445,7 +445,7 @@ class ConfigurationManager {
                         pass: smtpPass || emailConfig.imap?.auth?.pass || ''
                     }
                 },
-                from: fromEmail || `CCGram <${smtpUser || currentUser}>`,
+                from: fromEmail || `Cheesyboy <${smtpUser || currentUser}>`,
                 to: toEmail || currentTo
             }
         };
@@ -492,7 +492,7 @@ class ConfigurationManager {
 
     showHelp(): void {
         console.log(`
-CCGram Configuration Manager
+Cheesyboy Configuration Manager
 
 Usage: claude-remote config [options]
 

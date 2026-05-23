@@ -1,11 +1,11 @@
-# CCGram systemd unit file
+# Cheesyboy systemd unit file (formerly ccgram.service — filename kept for upgrade compatibility)
 # Copy to /etc/systemd/system/ccgram.service and edit paths, then:
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable ccgram
 #   sudo systemctl start ccgram
 
 [Unit]
-Description=CCGram - Claude Code Telegram Bot
+Description=Cheesyboy - Claude Code Telegram Bot
 After=network.target
 
 [Service]

@@ -1,5 +1,5 @@
 /**
- * CCGram Logger
+ * Cheesyboy Logger
  * Centralized logging utility
  */
 
@@ -8,7 +8,7 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 class Logger {
     namespace: string;
 
-    constructor(namespace: string = 'CCGram') {
+    constructor(namespace: string = 'Cheesyboy') {
         this.namespace = namespace;
     }
 

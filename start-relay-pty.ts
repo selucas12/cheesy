@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CCGram PTY Relay Startup Script
+ * Cheesyboy PTY Relay Startup Script
  * Start node-pty based email command relay service
  */
 
@@ -114,7 +114,7 @@ function startService(): void {
     // Check single instance
     checkSingleInstance();
 
-    console.log('\u{1F680} Starting CCGram PTY Relay service...\n');
+    console.log('\u{1F680} Starting Cheesyboy PTY Relay service...\n');
 
     const relayPath = path.join(__dirname, 'src/relay/relay-pty.js');
 
@@ -175,7 +175,7 @@ function showInstructions(): void {
 // Main function
 function main(): void {
     console.log('\u2554\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2557');
-    console.log('\u2551         CCGram PTY Relay Service              \u2551');
+    console.log('\u2551         Cheesyboy PTY Relay Service           \u2551');
     console.log('\u2551      Email Command Relay Service - node-pty based PTY mode          \u2551');
     console.log('\u255A\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u255D\n');
 

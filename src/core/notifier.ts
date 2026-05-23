@@ -1,5 +1,5 @@
 /**
- * CCGram Core Notifier
+ * Cheesyboy Core Notifier
  * Central notification orchestrator that manages multiple channels
  */
 
