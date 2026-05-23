@@ -5,11 +5,18 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write  # required to create a GitHub Release
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch tag history so release-notes generation can diff against the
+          # previous tag. Shallow clones miss prior tags.
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -30,3 +37,15 @@ jobs:
         run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # Use the tag that triggered the workflow.
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          generate_release_notes: true
+          # Don't mark pre-release tags (e.g. v2.0.0-beta.1) as latest.
+          prerelease: ${{ contains(github.ref_name, '-') }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
