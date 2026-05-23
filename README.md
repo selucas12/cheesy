@@ -91,7 +91,7 @@ Cheesyboy integrates with [Claude Code hooks](https://docs.anthropic.com/en/docs
 | `enhanced-hook-notify.js cwd-changed` | `CwdChanged` | Notifies when Claude changes working directory. |
 | `enhanced-hook-notify.js instructions-loaded` | `InstructionsLoaded` | Notifies when CLAUDE.md or rules are loaded. |
 
-> **Smart suppression** — all notifications (including permissions) are automatically silenced when you've sent a message to Claude within the last 5 minutes. The moment you step away, Telegram takes over. Telegram-injected commands always get their response back to Telegram regardless.
+> **Smart suppression** — all notifications (including permissions) are automatically silenced when you've sent a message to Claude within the last 2 minutes. The moment you step away, Telegram takes over. Telegram-injected commands always get their response back to Telegram regardless.
 
 ### Permission flow
 
@@ -186,8 +186,8 @@ TELEGRAM_CHAT_ID=your_chat_id_here
 PROJECT_DIRS=~/projects,~/tools
 
 # Suppress notifications when you're actively at the terminal
-# Default: 300 seconds (5 minutes). Set to 0 to always notify.
-ACTIVE_THRESHOLD_SECONDS=300
+# Default: 120 seconds (2 minutes). Set to 0 to always notify.
+ACTIVE_THRESHOLD_SECONDS=120
 ```
 
 ### Advanced options
@@ -345,7 +345,7 @@ Tests use isolated temp directories and run with `npm test` (vitest, no configur
 No. Cheesyboy uses Telegram's long-polling API — it works behind NAT, on a laptop, or anywhere with outbound HTTPS.
 
 **What if I'm already at my terminal?**
-All notifications — including permission requests — are suppressed automatically when you've sent a message to Claude within the last 5 minutes. The threshold is configurable via `ACTIVE_THRESHOLD_SECONDS`. Step away for more than 5 minutes and Telegram instantly takes over.
+All notifications — including permission requests — are suppressed automatically when you've sent a message to Claude within the last 2 minutes. The threshold is configurable via `ACTIVE_THRESHOLD_SECONDS`. Step away for more than 2 minutes and Telegram instantly takes over.
 
 **Can I use it with multiple projects at once?**
 Yes. Each Claude session maps to a named tmux or PTY session. Use `/sessions` to see all active sessions, or `/use <workspace>` to set a default for plain text routing.

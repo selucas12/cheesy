@@ -601,7 +601,7 @@ async function main(): Promise<void> {
     let injectionMode = existingEnv.INJECTION_MODE || '';
     let logLevel = existingEnv.LOG_LEVEL || 'info';
     let sessionMapPath = existingEnv.SESSION_MAP_PATH || defaultSessionMap;
-    let activeThreshold = existingEnv.ACTIVE_THRESHOLD_SECONDS || '300';
+    let activeThreshold = existingEnv.ACTIVE_THRESHOLD_SECONDS || '120';
     let advancedConfigured = false;
 
     console.log();
@@ -644,7 +644,7 @@ async function main(): Promise<void> {
     if (injectionMode) envValues.INJECTION_MODE = injectionMode;
     if (advancedConfigured || existingEnv.SESSION_MAP_PATH) envValues.SESSION_MAP_PATH = sessionMapPath;
     if (logLevel !== 'info' || existingEnv.LOG_LEVEL) envValues.LOG_LEVEL = logLevel;
-    if (activeThreshold !== '300' || existingEnv.ACTIVE_THRESHOLD_SECONDS) envValues.ACTIVE_THRESHOLD_SECONDS = activeThreshold;
+    if (activeThreshold !== '120' || existingEnv.ACTIVE_THRESHOLD_SECONDS) envValues.ACTIVE_THRESHOLD_SECONDS = activeThreshold;
 
     // ─── Write .env ────────────────────────────────────────
     const savedEnvPath: string = writeEnvFile(envValues, existingEnv);

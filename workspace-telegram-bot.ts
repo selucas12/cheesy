@@ -1505,7 +1505,13 @@ async function processCallbackQuery(query: TelegramCallbackQuery): Promise<void>
     }
 
     const { action } = parsed;
-    const label: string = action === 'allow' ? '\u2705 Allowed'
+    // Cheesyboy 4-button vocab: yes / yes_stop / no / explain.
+    // Legacy ccgram vocab still recognized: allow / always / defer / deny.
+    const label: string = action === 'yes' ? '\u2705 Yes'
+      : action === 'yes_stop' ? '\u2705 Yes, stop asking'
+      : action === 'no' ? '\u274c No'
+      : action === 'explain' ? '\u{1F4AC} Explain requested'
+      : action === 'allow' ? '\u2705 Allowed'
       : action === 'always' ? '\ud83d\udd13 Always Allowed'
       : action === 'defer' ? '\u23F8 Deferred'
       : '\u274c Denied';

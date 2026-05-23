@@ -63,13 +63,13 @@ async function main(): Promise<void> {
 
   // If user is actively at the terminal AND this wasn't injected from Telegram,
   // exit without a decision so Claude Code shows its own permission UI locally.
-  // Uses the same 300s (5 min) threshold as notification hooks.
-  // If user stepped away more than 5 min ago, Telegram handles the permission
+  // Uses the same 120s (2 min) Cheesyboy threshold as notification hooks.
+  // If user stepped away more than 2 min ago, Telegram handles the permission
   // so Claude isn't left stuck waiting with no way to respond.
   const typingActivePath = path.join(PROJECT_ROOT, 'src/data', 'typing-active');
   const isTelegramInjected = fs.existsSync(typingActivePath);
   if (!isTelegramInjected && isUserActiveAtTerminal()) {
-    debugLog(`[skip] User is at terminal (within 5 min) — deferring to Claude Code's own permission UI`);
+    debugLog(`[skip] User is at terminal (within 2 min) — deferring to Claude Code's own permission UI`);
     return;
   }
 
