@@ -15,9 +15,50 @@ import os from 'os';
 import { spawn, execSync } from 'child_process';
 import pc from 'picocolors';
 import { CCGRAM_HOME } from '../utils/paths';
+import { validateStored, isDevMode, readLicenseRecord } from '../lib/license-validator';
 
 export interface StartOptions {
   foreground?: boolean;
+  /** Bypass license validation. Intended for CI/dev only. */
+  skipLicense?: boolean;
+}
+
+/**
+ * Gate `cheesy start` on a valid license unless the user is in dev mode or
+ * explicitly skipping. Returns null on success, an exit code on refusal.
+ */
+async function gateLicense(opts: StartOptions): Promise<number | null> {
+  if (opts.skipLicense || process.env.CHEESY_SKIP_LICENSE === '1') {
+    console.log(pc.yellow('⚠ License check skipped (CHEESY_SKIP_LICENSE / --skip-license).'));
+    return null;
+  }
+  if (isDevMode()) {
+    console.log(pc.yellow('⚠ DEV MODE — license check skipped.'));
+    return null;
+  }
+  const cached = readLicenseRecord();
+  if (!cached) {
+    console.error(pc.red('✗ No license activated on this machine.'));
+    console.error(pc.dim('  Activate with: cheesy license activate <YOUR-KEY>'));
+    console.error(pc.dim('  Or run `cheesy init --dev` for a no-license dev install.'));
+    return 1;
+  }
+  const r = await validateStored();
+  if (r.kind === 'ok') return null;
+  // Errors render here so callers don't have to.
+  if (r.kind === 'network') {
+    console.error(pc.yellow(`⚠ ${r.reason}`));
+    console.error(pc.dim('  Refusing to start until license can be re-validated.'));
+    return 2;
+  }
+  if (r.kind === 'limit') {
+    console.error(pc.red(`✗ ${r.reason}`));
+    console.error(pc.dim('  Deactivate on another machine to free a slot, then retry.'));
+    return 1;
+  }
+  console.error(pc.red(`✗ License invalid: ${r.reason}`));
+  console.error(pc.dim('  Run: cheesy license status'));
+  return 1;
 }
 
 function resolveBotScript(): string | null {
@@ -66,6 +107,9 @@ function startSystemd(): number {
 }
 
 export async function runStart(opts: StartOptions = {}): Promise<number> {
+  const refusal = await gateLicense(opts);
+  if (refusal !== null) return refusal;
+
   if (opts.foreground) {
     return startForegroundAwaitable();
   }

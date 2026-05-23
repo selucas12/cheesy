@@ -67,7 +67,8 @@ program
   .command('start')
   .description('Start the Cheesyboy bot. Uses launchd/systemd if installed, else foreground.')
   .option('-f, --foreground', 'Always run in the foreground (no background service).')
-  .action((opts) => exitWith(runStart({ foreground: !!opts.foreground })));
+  .option('--skip-license', 'Bypass license validation (intended for CI/dev only).')
+  .action((opts) => exitWith(runStart({ foreground: !!opts.foreground, skipLicense: !!opts.skipLicense })));
 
 program
   .command('stop')
